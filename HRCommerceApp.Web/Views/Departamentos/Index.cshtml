@@ -1,0 +1,68 @@
+﻿@model IEnumerable<HRCommerceApp.Core.DTOs.RRHH.DepartamentoDto>
+@{
+    ViewData["Title"] = "Gestión de Departamentos";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-building me-2"></i>@ViewData["Title"]</h2>
+    @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
+    {
+        <a href="@Url.Action("Create")" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Nuevo Departamento
+        </a>
+    }
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">@item.Nombre</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <strong>Presupuesto:</strong> Q @item.Presupuesto.ToString("N2")
+                    </div>
+                    <div class="mb-2">
+                        <strong>Empleados:</strong> @item.TotalEmpleados
+                    </div>
+                    <div class="mb-2">
+                        <strong>Creado:</strong> @item.CreatedAt.ToString("dd/MM/yyyy")
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group w-100" role="group">
+                        <a href="@Url.Action("Details", new { id = item.IdDepartamento })" class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
+                        {
+                            <a href="@Url.Action("Edit", new { id = item.IdDepartamento })" class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        }
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <form method="post" action="@Url.Action("Delete", new { id = item.IdDepartamento })" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar este departamento?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

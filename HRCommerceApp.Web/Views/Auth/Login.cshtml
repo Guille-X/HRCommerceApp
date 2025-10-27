@@ -1,0 +1,52 @@
+﻿@model HRCommerceApp.Core.DTOs.Auth.LoginDto
+
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3><i class="fas fa-building me-2"></i>HRCommerce</h3>
+                    <p class="mb-0">Sistema de Gestión Integral</p>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Login" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" placeholder="usuario@ejemplo.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">Contraseña</label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Ingrese su contraseña" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                            </button>
+                        </div>
+
+                        @if (ViewData.ModelState.ErrorCount > 0)
+                        {
+                            <div class="alert alert-danger mt-3">
+                                @Html.ValidationSummary()
+                            </div>
+                        }
+                    </form>
+                </div>
+                <div class="card-footer text-center text-muted">
+                    <small>Use admin@hrcommerce.com / Admin123! para administrador</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

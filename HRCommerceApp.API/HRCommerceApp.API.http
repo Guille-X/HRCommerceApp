@@ -1,0 +1,6 @@
+@HRCommerceApp.API_HostAddress = http://localhost:5100
+
+GET {{HRCommerceApp.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

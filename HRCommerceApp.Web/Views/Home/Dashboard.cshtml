@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h2>
+    <span class="text-muted">Bienvenido, @User.FindFirst("FirstName")?.Value!</span>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">Empleados</h4>
+                        <h2>--</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">Departamentos</h4>
+                        <h2>--</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-building fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">Ventas</h4>
+                        <h2>--</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">Reportes</h4>
+                        <h2>--</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-chart-bar fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Acciones Rápidas</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="@Url.Action("Index", "Empleados")" class="btn btn-outline-primary btn-lg text-start">
+                        <i class="fas fa-users me-2"></i>Gestionar Empleados
+                    </a>
+                    <a href="@Url.Action("Index", "Departamentos")" class="btn btn-outline-success btn-lg text-start">
+                        <i class="fas fa-building me-2"></i>Gestionar Departamentos
+                    </a>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a href="@Url.Action("Ventas", "Reportes")" class="btn btn-outline-warning btn-lg text-start">
+                            <i class="fas fa-chart-bar me-2"></i>Ver Reportes
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Información del Sistema</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-5">Usuario:</dt>
+                    <dd class="col-sm-7">@User.FindFirst("FirstName")?.Value @User.FindFirst("LastName")?.Value</dd>
+
+                    <dt class="col-sm-5">Email:</dt>
+                    <dd class="col-sm-7">@User.Identity.Name</dd>
+
+                    <dt class="col-sm-5">Rol:</dt>
+                    <dd class="col-sm-7">
+                        @string.Join(", ", ((System.Security.Claims.ClaimsIdentity)User.Identity).Claims
+                                                .Where(c => c.Type == System.Security.Claims.ClaimTypes.Role)
+                                                .Select(c => c.Value))
+                    </dd>
+
+                    <dt class="col-sm-5">Sistema:</dt>
+                    <dd class="col-sm-7">HRCommerce v1.0</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>

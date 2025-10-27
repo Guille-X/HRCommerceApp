@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36518.9
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRCommerceApp.API", "HRCommerceApp.API\HRCommerceApp.API.csproj", "{6407A849-D280-4D09-B4F6-B712E6186EB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRCommerceApp.Web", "HRCommerceApp.Web\HRCommerceApp.Web.csproj", "{CECBA380-AAEF-468C-AD69-BE135FAC1E92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRCommerceApp.Core", "HRCommerceApp.Core\HRCommerceApp.Core.csproj", "{2FFB39FA-9E90-4599-B355-98D01B832490}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRCommerceApp.Infrastructure", "HRCommerceApp.Infrastructure\HRCommerceApp.Infrastructure.csproj", "{826D37F9-5F44-4949-9A5C-3EF2AFD381A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRCommerceApp.Services", "HRCommerceApp.Services\HRCommerceApp.Services.csproj", "{25AB479F-6C57-4DB3-82A1-516A9F114B28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRCommerceApp.Tests", "HRCommerceApp.Tests\HRCommerceApp.Tests.csproj", "{B184CDB5-5DD0-4F54-ABA2-2A93DE0A54D2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6407A849-D280-4D09-B4F6-B712E6186EB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6407A849-D280-4D09-B4F6-B712E6186EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6407A849-D280-4D09-B4F6-B712E6186EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6407A849-D280-4D09-B4F6-B712E6186EB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CECBA380-AAEF-468C-AD69-BE135FAC1E92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CECBA380-AAEF-468C-AD69-BE135FAC1E92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CECBA380-AAEF-468C-AD69-BE135FAC1E92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CECBA380-AAEF-468C-AD69-BE135FAC1E92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FFB39FA-9E90-4599-B355-98D01B832490}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FFB39FA-9E90-4599-B355-98D01B832490}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FFB39FA-9E90-4599-B355-98D01B832490}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FFB39FA-9E90-4599-B355-98D01B832490}.Release|Any CPU.Build.0 = Release|Any CPU
+		{826D37F9-5F44-4949-9A5C-3EF2AFD381A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{826D37F9-5F44-4949-9A5C-3EF2AFD381A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{826D37F9-5F44-4949-9A5C-3EF2AFD381A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{826D37F9-5F44-4949-9A5C-3EF2AFD381A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25AB479F-6C57-4DB3-82A1-516A9F114B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25AB479F-6C57-4DB3-82A1-516A9F114B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25AB479F-6C57-4DB3-82A1-516A9F114B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25AB479F-6C57-4DB3-82A1-516A9F114B28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B184CDB5-5DD0-4F54-ABA2-2A93DE0A54D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B184CDB5-5DD0-4F54-ABA2-2A93DE0A54D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B184CDB5-5DD0-4F54-ABA2-2A93DE0A54D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B184CDB5-5DD0-4F54-ABA2-2A93DE0A54D2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {96EDC90F-1282-4A3E-B137-4E800C446227}
+	EndGlobalSection
+EndGlobal
