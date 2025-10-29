@@ -173,29 +173,29 @@ namespace HRCommerceApp.Infrastructure.Migrations
                         new
                         {
                             IdDepartamento = 1,
-                            CreatedAt = new DateTime(2025, 10, 27, 9, 36, 31, 927, DateTimeKind.Utc).AddTicks(2998),
+                            CreatedAt = new DateTime(2025, 10, 28, 22, 22, 29, 94, DateTimeKind.Utc).AddTicks(1905),
                             CreatedBy = "system",
                             Nombre = "Recursos Humanos",
                             Presupuesto = 50000.00m,
-                            UpdatedAt = new DateTime(2025, 10, 27, 9, 36, 31, 927, DateTimeKind.Utc).AddTicks(2999)
+                            UpdatedAt = new DateTime(2025, 10, 28, 22, 22, 29, 94, DateTimeKind.Utc).AddTicks(1906)
                         },
                         new
                         {
                             IdDepartamento = 2,
-                            CreatedAt = new DateTime(2025, 10, 27, 9, 36, 31, 927, DateTimeKind.Utc).AddTicks(3002),
+                            CreatedAt = new DateTime(2025, 10, 28, 22, 22, 29, 94, DateTimeKind.Utc).AddTicks(1909),
                             CreatedBy = "system",
                             Nombre = "Ventas",
                             Presupuesto = 75000.00m,
-                            UpdatedAt = new DateTime(2025, 10, 27, 9, 36, 31, 927, DateTimeKind.Utc).AddTicks(3003)
+                            UpdatedAt = new DateTime(2025, 10, 28, 22, 22, 29, 94, DateTimeKind.Utc).AddTicks(1909)
                         },
                         new
                         {
                             IdDepartamento = 3,
-                            CreatedAt = new DateTime(2025, 10, 27, 9, 36, 31, 927, DateTimeKind.Utc).AddTicks(3005),
+                            CreatedAt = new DateTime(2025, 10, 28, 22, 22, 29, 94, DateTimeKind.Utc).AddTicks(1911),
                             CreatedBy = "system",
                             Nombre = "TI",
                             Presupuesto = 60000.00m,
-                            UpdatedAt = new DateTime(2025, 10, 27, 9, 36, 31, 927, DateTimeKind.Utc).AddTicks(3006)
+                            UpdatedAt = new DateTime(2025, 10, 28, 22, 22, 29, 94, DateTimeKind.Utc).AddTicks(1912)
                         });
                 });
 
@@ -347,6 +347,7 @@ namespace HRCommerceApp.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PorcentajeAumento")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("SalarioAnterior")

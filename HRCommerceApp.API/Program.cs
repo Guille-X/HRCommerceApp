@@ -75,11 +75,12 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmpleadoService, EmpleadoService>();
 builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
 builder.Services.AddScoped<IReporteService, ReporteService>();
+builder.Services.AddScoped<DataSeedService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -105,9 +106,21 @@ app.MapControllers();
 // Seed initial data
 using (var scope = app.Services.CreateScope())
 {
-    var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
-    await authService.SeedRolesAsync();
-    await authService.SeedAdminUserAsync();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        logger.LogInformation("Iniciando creación de datos iniciales...");
+
+        var seedService = scope.ServiceProvider.GetRequiredService<DataSeedService>();
+        await seedService.SeedDataAsync();
+
+        logger.LogInformation("Datos iniciales creados exitosamente");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error creando datos iniciales");
+    }
 }
 
 app.Run();

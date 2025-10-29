@@ -30,6 +30,13 @@ namespace HRCommerceApp.Services.Implementations
 
         public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto)
         {
+            var jwtKey = _configuration["Jwt:Key"];
+            if (string.IsNullOrEmpty(jwtKey))
+            {
+                Console.WriteLine("Running in frontend mode - skipping JWT generation");
+                return null; // O lanzar una excepción específica
+            }
+
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
             if (user != null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
             {

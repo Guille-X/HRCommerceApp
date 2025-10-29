@@ -39,12 +39,16 @@ namespace HRCommerceApp.Infrastructure.Data
                 entity.HasIndex(e => e.Documento).IsUnique();
                 entity.HasOne(e => e.Departamento)
                       .WithMany(d => d.Empleados)
-                      .HasForeignKey(e => e.DepartamentoId)
+                      .HasForeignKey(e => e.DepartamentoId) 
                       .OnDelete(DeleteBehavior.Restrict);
             });
 
+            // Configuraciones de modelo para Historial_Salarial
             builder.Entity<HistorialSalarial>(entity =>
             {
+                entity.Property(h => h.PorcentajeAumento)
+                      .HasPrecision(18, 2);
+
                 entity.HasOne(h => h.Empleado)
                       .WithMany(e => e.HistorialSalarial)
                       .HasForeignKey(h => h.EmpleadoId)

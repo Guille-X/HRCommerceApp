@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HRCommerceApp.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreateSQLServer : Migration
+    public partial class InitialCreateClean : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -312,7 +312,7 @@ namespace HRCommerceApp.Infrastructure.Migrations
                     SalarioAnterior = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     NuevoSalario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Aumento = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PorcentajeAumento = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PorcentajeAumento = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     FechaAumento = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Motivo = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -335,9 +335,9 @@ namespace HRCommerceApp.Infrastructure.Migrations
                 columns: new[] { "IdDepartamento", "CreatedAt", "CreatedBy", "Nombre", "Presupuesto", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 10, 27, 9, 36, 31, 927, DateTimeKind.Utc).AddTicks(2998), "system", "Recursos Humanos", 50000.00m, new DateTime(2025, 10, 27, 9, 36, 31, 927, DateTimeKind.Utc).AddTicks(2999) },
-                    { 2, new DateTime(2025, 10, 27, 9, 36, 31, 927, DateTimeKind.Utc).AddTicks(3002), "system", "Ventas", 75000.00m, new DateTime(2025, 10, 27, 9, 36, 31, 927, DateTimeKind.Utc).AddTicks(3003) },
-                    { 3, new DateTime(2025, 10, 27, 9, 36, 31, 927, DateTimeKind.Utc).AddTicks(3005), "system", "TI", 60000.00m, new DateTime(2025, 10, 27, 9, 36, 31, 927, DateTimeKind.Utc).AddTicks(3006) }
+                    { 1, new DateTime(2025, 10, 28, 22, 22, 29, 94, DateTimeKind.Utc).AddTicks(1905), "system", "Recursos Humanos", 50000.00m, new DateTime(2025, 10, 28, 22, 22, 29, 94, DateTimeKind.Utc).AddTicks(1906) },
+                    { 2, new DateTime(2025, 10, 28, 22, 22, 29, 94, DateTimeKind.Utc).AddTicks(1909), "system", "Ventas", 75000.00m, new DateTime(2025, 10, 28, 22, 22, 29, 94, DateTimeKind.Utc).AddTicks(1909) },
+                    { 3, new DateTime(2025, 10, 28, 22, 22, 29, 94, DateTimeKind.Utc).AddTicks(1911), "system", "TI", 60000.00m, new DateTime(2025, 10, 28, 22, 22, 29, 94, DateTimeKind.Utc).AddTicks(1912) }
                 });
 
             migrationBuilder.CreateIndex(
