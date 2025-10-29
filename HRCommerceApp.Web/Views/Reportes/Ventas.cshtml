@@ -1,0 +1,241 @@
+﻿@{
+    ViewData["Title"] = "Reporte de Ventas";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-chart-bar me-2"></i>@ViewData["Title"]</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Filtros del Reporte</h5>
+            </div>
+            <div class="card-body">
+                <form id="filtroForm">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+                                <input type="date" class="form-control" id="fechaInicio" name="fechaInicio">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="fechaFin" class="form-label">Fecha Fin</label>
+                                <input type="date" class="form-control" id="fechaFin" name="fechaFin">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3 d-flex align-items-end">
+                                <button type="button" id="btnGenerarReporte" class="btn btn-primary me-2">
+                                    <i class="fas fa-sync-alt me-1"></i>Generar Reporte
+                                </button>
+                                <button type="button" id="btnUltimoMes" class="btn btn-outline-secondary">
+                                    <i class="fas fa-calendar me-1"></i>Último Mes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div id="loadingSpinner" class="text-center mt-4" style="display: none;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Generando reporte...</p>
+</div>
+
+<!-- Resultados del Reporte -->
+<div id="resultadosReporte" class="mt-4" style="display: none;">
+    <!-- Aquí se cargarán los resultados via AJAX -->
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Establecer fechas por defecto (último mes)
+            const hoy = new Date();
+            const haceUnMes = new Date();
+            haceUnMes.setMonth(hoy.getMonth() - 1);
+
+            document.getElementById('fechaInicio').value = haceUnMes.toISOString().split('T')[0];
+            document.getElementById('fechaFin').value = hoy.toISOString().split('T')[0];
+
+            document.getElementById('btnGenerarReporte').addEventListener('click', generarReporte);
+            document.getElementById('btnUltimoMes').addEventListener('click', function() {
+                const hoy = new Date();
+                const haceUnMes = new Date();
+                haceUnMes.setMonth(hoy.getMonth() - 1);
+
+                document.getElementById('fechaInicio').value = haceUnMes.toISOString().split('T')[0];
+                document.getElementById('fechaFin').value = hoy.toISOString().split('T')[0];
+                generarReporte();
+            });
+
+            function generarReporte() {
+                const fechaInicio = document.getElementById('fechaInicio').value;
+                const fechaFin = document.getElementById('fechaFin').value;
+
+                if (!fechaInicio || !fechaFin) {
+                    alert('Por favor seleccione ambas fechas');
+                    return;
+                }
+
+                document.getElementById('loadingSpinner').style.display = 'block';
+                document.getElementById('resultadosReporte').style.display = 'none';
+
+                fetch('@Url.Action("GenerarReporteVentas", "Reportes")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fechaInicio: fechaInicio,
+                        fechaFin: fechaFin
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    mostrarResultados(data);
+                })
+                .catch(error => {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    console.error('Error:', error);
+                    alert('Error al generar el reporte: ' + error.message);
+                });
+            }
+
+            function mostrarResultados(reporte) {
+                const resultadosDiv = document.getElementById('resultadosReporte');
+
+                let html = `
+                    <div class="row">
+                        <!-- Resumen General -->
+                        <div class="col-md-12 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="card-title mb-0">Resumen General</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3 text-center">
+                                            <h3 class="text-primary">Q ${reporte.totalVentas.toLocaleString('es-GT', {minimumFractionDigits: 2})}</h3>
+                                            <p class="text-muted">Total Ventas</p>
+                                        </div>
+                                        <div class="col-md-3 text-center">
+                                            <h3 class="text-info">${reporte.totalTransacciones}</h3>
+                                            <p class="text-muted">Total Transacciones</p>
+                                        </div>
+                                        <div class="col-md-3 text-center">
+                                            <h3 class="text-success">Q ${reporte.margenGanancia.toLocaleString('es-GT', {minimumFractionDigits: 2})}</h3>
+                                            <p class="text-muted">Margen de Ganancia</p>
+                                        </div>
+                                        <div class="col-md-3 text-center">
+                                            <h3 class="text-warning">${reporte.ventasPorCliente.length}</h3>
+                                            <p class="text-muted">Clientes Activos</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+
+                // Ventas por Cliente
+                if (reporte.ventasPorCliente && reporte.ventasPorCliente.length > 0) {
+                    html += `
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="card-title mb-0">Ventas por Cliente</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Cliente</th>
+                                                    <th>Total Ventas</th>
+                                                    <th>Compras</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>`;
+
+                    reporte.ventasPorCliente.forEach(cliente => {
+                        html += `
+                            <tr>
+                                <td>${cliente.clienteNombre}</td>
+                                <td>Q ${cliente.totalVentas.toLocaleString('es-GT', {minimumFractionDigits: 2})}</td>
+                                <td>${cliente.totalCompras}</td>
+                            </tr>`;
+                    });
+
+                    html += `
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                }
+
+                // Productos Más Vendidos
+                if (reporte.productosMasVendidos && reporte.productosMasVendidos.length > 0) {
+                    html += `
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-warning text-white">
+                                    <h5 class="card-title mb-0">Productos Más Vendidos</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Producto</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Total Ventas</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>`;
+
+                    reporte.productosMasVendidos.forEach(producto => {
+                        html += `
+                            <tr>
+                                <td>${producto.descripcion}</td>
+                                <td>${producto.cantidadVendida}</td>
+                                <td>Q ${producto.totalVentas.toLocaleString('es-GT', {minimumFractionDigits: 2})}</td>
+                            </tr>`;
+                    });
+
+                    html += `
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                }
+
+                html += `</div>`;
+
+                resultadosDiv.innerHTML = html;
+                resultadosDiv.style.display = 'block';
+            }
+
+            // Generar reporte automáticamente al cargar la página
+            generarReporte();
+        });
+    </script>
+}

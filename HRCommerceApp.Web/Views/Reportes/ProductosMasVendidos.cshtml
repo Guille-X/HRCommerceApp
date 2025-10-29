@@ -1,0 +1,39 @@
+﻿@model IEnumerable<HRCommerceApp.Core.DTOs.Comercial.ProductoMasVendidoDto>
+@{
+    ViewData["Title"] = "Productos Más Vendidos";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-chart-line me-2"></i>@ViewData["Title"]</h2>
+    <a href="@Url.Action("Ventas")" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-1"></i>Volver a Reportes
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>SKU</th>
+                        <th>Cantidad Vendida</th>
+                        <th>Total Ventas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var producto in Model)
+                    {
+                        <tr>
+                            <td>@producto.Descripcion</td>
+                            <td>@producto.SKU</td>
+                            <td>@producto.CantidadVendida</td>
+                            <td>Q @producto.TotalVentas.ToString("N2")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

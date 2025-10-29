@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using HRCommerceApp.Core.Interfaces;
 using HRCommerceApp.Core.DTOs.RRHH;
 using HRCommerceApp.Core.Enums;
-
+using Microsoft.AspNetCore.Mvc.Rendering;
 namespace HRCommerceApp.Web.Controllers
 {
     [Authorize]

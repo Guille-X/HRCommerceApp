@@ -70,7 +70,7 @@ namespace HRCommerceApp.Web.Controllers
                     }
                 }
 
-                // USAR IdentityConstants.ApplicationScheme (EL CORRECTO)
+                // USAR IdentityConstants.ApplicationScheme
                 var claimsIdentity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
                 var authProperties = new AuthenticationProperties
                 {
@@ -81,7 +81,7 @@ namespace HRCommerceApp.Web.Controllers
 
                 Console.WriteLine(" Signing in with Identity.Application scheme...");
                 await HttpContext.SignInAsync(
-                    IdentityConstants.ApplicationScheme, // ESQUEMA CORRECTO
+                    IdentityConstants.ApplicationScheme, 
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 

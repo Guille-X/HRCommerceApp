@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using HRCommerceApp.Core.Interfaces;
-using HRCommerceApp.Core.DTOs.RRHH;
+﻿using HRCommerceApp.Core.DTOs.RRHH;
 using HRCommerceApp.Core.Enums;
+using HRCommerceApp.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HRCommerceApp.Web.Controllers
 {
@@ -39,7 +40,7 @@ namespace HRCommerceApp.Web.Controllers
         [Authorize(Roles = $"{UserRole.Administrador},{UserRole.Operador}")]
         public async Task<IActionResult> Create()
         {
-            ViewBag.Departamentos = await _departamentoService.GetAllAsync();
+            await CargarDepartamentosEnViewBag();
             return View();
         }
 
@@ -60,7 +61,8 @@ namespace HRCommerceApp.Web.Controllers
                 }
             }
 
-            ViewBag.Departamentos = await _departamentoService.GetAllAsync();
+            // CORREGIDO: Llamar al método que convierte a SelectListItem
+            await CargarDepartamentosEnViewBag();
             return View(model);
         }
 
@@ -73,7 +75,8 @@ namespace HRCommerceApp.Web.Controllers
                 return NotFound();
             }
 
-            ViewBag.Departamentos = await _departamentoService.GetAllAsync();
+            // CORREGIDO: Llamar al método que convierte a SelectListItem
+            await CargarDepartamentosEnViewBag(empleado.DepartamentoId);
 
             var updateDto = new UpdateEmpleadoDto
             {
@@ -107,7 +110,8 @@ namespace HRCommerceApp.Web.Controllers
                 }
             }
 
-            ViewBag.Departamentos = await _departamentoService.GetAllAsync();
+            // CORREGIDO: Llamar al método que convierte a SelectListItem
+            await CargarDepartamentosEnViewBag(model.DepartamentoId);
             return View(model);
         }
 
@@ -125,6 +129,18 @@ namespace HRCommerceApp.Web.Controllers
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(Index));
             }
+        }
+
+        // MÉTODO AUXILIAR PARA CARGAR DEPARTAMENTOS CORRECTAMENTE
+        private async Task CargarDepartamentosEnViewBag(int? departamentoSeleccionado = null)
+        {
+            var departamentos = await _departamentoService.GetAllAsync();
+            ViewBag.Departamentos = departamentos.Select(d => new SelectListItem
+            {
+                Value = d.IdDepartamento.ToString(),
+                Text = d.Nombre,
+                Selected = departamentoSeleccionado.HasValue && d.IdDepartamento == departamentoSeleccionado.Value
+            }).ToList();
         }
     }
 }

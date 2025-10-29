@@ -10,15 +10,15 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Agregar servicios al contenedor
 builder.Services.AddControllersWithViews();
 
-// Database Configuration
+// Configuracion de la bd
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-//  CONFIGURACIÓN EXPLÍCITA DE AUTHENTICATION PRIMERO
+// CONFIGURACIÓN EXPLÍCITA DE AUTHENTICATION PRIMERO
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = IdentityConstants.ApplicationScheme;
@@ -33,7 +33,7 @@ builder.Services.AddAuthentication(options =>
     options.SlidingExpiration = true;
 });
 
-// LUEGO AGREGAR IDENTITY
+// AGREGAMOS IDENTITY
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
 {
     options.Password.RequireDigit = true;
@@ -48,14 +48,28 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 .AddSignInManager()
 .AddDefaultTokenProviders();
 
-// Resto de servicios...
-builder.Services.AddHttpClient<IAuthWebService, AuthWebService>();
+//SERVICIOS
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmpleadoService, EmpleadoService>();
+builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
+builder.Services.AddScoped<IReporteService, ReporteService>();
 builder.Services.AddScoped<IAuthWebService, AuthWebService>();
-// ... otros servicios
 
+// HttpClient para AuthWebService
+builder.Services.AddHttpClient<IAuthWebService, AuthWebService>();
+
+// Session configuration
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
