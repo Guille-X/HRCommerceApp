@@ -1,0 +1,54 @@
+services:
+  # Base de datos SQL Server
+  hrcommerce-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: hrcommerce-sql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=MiClaveSegura2024!
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - hrcommerce-network
+
+  # API (Backend)
+  hrcommerce-api:
+    build:
+      context: .
+      dockerfile: HRCommerceApp.API/Dockerfile
+    container_name: hrcommerce-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=hrcommerce-db;Database=HRCommerceDB;User Id=sa;Password=MiClaveSegura2024!;MultipleActiveResultSets=true;TrustServerCertificate=True;
+    ports:
+      - "5000:8080"
+    depends_on:
+      - hrcommerce-db
+    networks:
+      - hrcommerce-network
+
+  # Web (Frontend MVC)
+  hrcommerce-web:
+    build:
+      context: .
+      dockerfile: HRCommerceApp.Web/Dockerfile
+    container_name: hrcommerce-web
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ApiSettings__BaseUrl=http://hrcommerce-api:8080
+    ports:
+      - "5001:8080" 
+    depends_on:
+      - hrcommerce-api
+    networks:
+      - hrcommerce-network
+
+networks:
+  hrcommerce-network:
+    driver: bridge
+
+volumes:
+  sqlserver-data:

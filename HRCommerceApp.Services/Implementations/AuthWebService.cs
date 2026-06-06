@@ -21,7 +21,7 @@ namespace HRCommerceApp.Services.Implementations
             _configuration = configuration;
 
             // Configurar base URL de la API
-            var apiBaseUrl = _configuration["ApiBaseUrl"] ?? "https://localhost:7004";
+            var apiBaseUrl = _configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7004";
             _httpClient.BaseAddress = new Uri(apiBaseUrl);
         }
 

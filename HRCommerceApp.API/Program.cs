@@ -9,118 +9,116 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using HRCommerceApp.Services.Implementations;
 using HRCommerceApp.Services.Mappings;
 using HRCommerceApp.API.Middleware;
 
-var builder = WebApplication.CreateBuilder(args);
-
-
-
-//Configuracion bd
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options => 
-options.UseSqlServer(connectionString));
-
-// ASP.NET Core Identity
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+namespace HRCommerceApp.API
 {
-    // Password conf
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = true;
-    options.Password.RequiredLength = 6;
-    options.Password.RequiredUniqueChars = 1;
-
-    // Lockout conf
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.AllowedForNewUsers = true;
-
-    // User conf
-    options.User.AllowedUserNameCharacters =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-    options.User.RequireUniqueEmail = true;
-})
-.AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
-
-// JWT Authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.SaveToken = true;
-    options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new TokenValidationParameters()
+    public class Program
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-});
+        public static async Task Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+            // Configuracion bd
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(connectionString));
 
-// Registrar Servicios
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IEmpleadoService, EmpleadoService>();
-builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
-builder.Services.AddScoped<IReporteService, ReporteService>();
-builder.Services.AddScoped<DataSeedService>();
+            // Identity y JWT (igual que antes)
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
 
-// AutoMapper
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
 
+                options.User.AllowedUserNameCharacters =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                };
+            });
 
-var app = builder.Build();
+            builder.Services.AddControllers();
 
-// Configuracion de HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IEmpleadoService, EmpleadoService>();
+            builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
+            builder.Services.AddScoped<IReporteService, ReporteService>();
+            builder.Services.AddScoped<DataSeedService>();
 
-app.UseHttpsRedirection();
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
-// Add Exception Handling Middleware
-app.UseMiddleware<ExceptionHandlerMiddleware>();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
 
-app.UseAuthentication();
-app.UseAuthorization();
+            var app = builder.Build();
 
-app.MapControllers();
+            // 🔧 Crear la base de datos antes de cualquier otra cosa
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                dbContext.Database.EnsureCreated();  // Crea la base y tablas si no existen
+            }
 
-// Seed initial data
-using (var scope = app.Services.CreateScope())
-{
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
 
-    try
-    {
-        logger.LogInformation("Iniciando creaci�n de datos iniciales...");
+            app.UseHttpsRedirection();
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.MapControllers();
 
-        var seedService = scope.ServiceProvider.GetRequiredService<DataSeedService>();
-        await seedService.SeedDataAsync();
+            // Seed data (ahora la base ya existe)
+            using (var scope = app.Services.CreateScope())
+            {
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                try
+                {
+                    logger.LogInformation("Iniciando creación de datos iniciales...");
+                    var seedService = scope.ServiceProvider.GetRequiredService<DataSeedService>();
+                    await seedService.SeedDataAsync();
+                    logger.LogInformation("Datos iniciales creados exitosamente");
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Error creando datos iniciales");
+                }
+            }
 
-        logger.LogInformation("Datos iniciales creados exitosamente");
+            await app.RunAsync();
+        }
     }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, "Error creando datos iniciales");
-    }
 }
-
-app.Run();
