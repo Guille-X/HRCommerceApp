@@ -86,14 +86,19 @@ namespace HRCommerceApp.API
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                dbContext.Database.EnsureCreated();  // Crea la base y tablas si no existen
+                dbContext.Database.Migrate(); // Crea la base y tablas si no existen
             }
 
-            if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "HRCommerce API v1");
+                    c.RoutePrefix = string.Empty;
+                });
             }
+
 
             app.UseHttpsRedirection();
             app.UseMiddleware<ExceptionHandlerMiddleware>();
